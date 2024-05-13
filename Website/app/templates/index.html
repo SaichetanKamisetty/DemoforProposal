@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static',filename='main.css') }}" type="text/css" rel="stylesheet">
+    <title>Mock-up</title>
+</head>
+<body>
+    <div class="left-hand">
+        <h1 style="color:white; text-align: center; margin-top: 60px;">WebTranslate</h2>
+
+        <h3 style="color:white; margin-top: 175px;">ChatGPT API Key</h3>
+        <input type="text">
+        <h3 style="color:white;">GoogleTranslate API Key</h3>
+        <input type="text">
+        <input type="submit" value="Save">
+        
+        {% if form_submitted %}
+        <form action="/translateWebtoon" method="POST" enctype="multipart/form-data"  {% if translate_pages %} style="display: none;" {% endif %}>
+        <input type="submit" value="Translate" id="Translate">
+        {% endif %}
+
+        <h5 name="Status" style="color:white; text-align: center; margin-top: 150px;">
+            {% if translate_pages %}
+            Completed Translation
+            {% else %}
+            Waiting for translation request
+            {% endif %}
+        </h5>
+
+    </div>
+
+    <div class="right-hand">
+
+        <div class="in-line-tip"  {% if form_submitted or translate_pages %} style="display: none;" {% endif %} >
+            <p style="color:white; font-size: 20px;">Upload your file: To begin translation, upload your Webtoon document in a folder.
+                <br><br>TIP: Keep all images in PNG format, in the root directory. </p>
+        </div>
+        <form action="/uploadWebtoon" method="POST" enctype="multipart/form-data" {% if form_submitted or translate_pages %} style="display: none;" {% endif %}>
+        <input type="file" webkitdirectory directory multiple name="files[]"  {% if form_submitted or translate_pages %} style="display: none;" {% endif %}/>
+        <input type="submit" value="Upload" {% if form_submitted or translate_pages %} style="display: none;" {% endif %}>
+        </form>
+
+
+        {% if form_submitted %}
+        <div class="webtoon-container">
+            {% for filename in filenames %}
+            <img src="{{ url_for('static', filename='uploads/' + filename) }}">     
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if translate_pages %}
+        <div class="webtoon-container">
+            {% for filename in filenames %}
+            <img src="{{ url_for('static', filename='translatedPages/' + filename) }}">     
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    </div>
+    
+</body>
+</html>
